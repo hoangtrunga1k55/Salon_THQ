@@ -1,0 +1,41 @@
+version: '3'
+services:
+  web:
+    build: 'docker/php-apache'
+    ports:
+      - "${APACHE_PORT}:80"
+    volumes:
+      - ".:/var/www/html"
+    networks:
+      - salon_network
+    environment:
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      ENV_MODE: dev
+      PHP_ENV: dev
+    links:
+      - mysql
+    depends_on:
+      - mysql
+  mysql:
+    build: 'docker/mysql'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - salon-data:/var/lib/mysql
+      - ./docker/mysql/sql:/init_sqls
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - salon_network
+networks:
+  salon_network:
+    driver: bridge
+volumes:
+  salon-data:
+    driver: local
