@@ -4,7 +4,7 @@ namespace Deployer;
 require 'recipe/laravel.php';
 
 // Project name
-set('application', 'CRM_Salon');
+set('application', 'Salon_THQ');
 
 // Project repository
 set('repository', 'https://github.com/hoangtrunga1k55/Salon_THQ.git');
